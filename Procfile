@@ -1,0 +1,1 @@
+web: gunicorn import_mysql:app
