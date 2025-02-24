@@ -188,6 +188,5 @@ def add_question():
 
     return render_template("add_question.html")  # Show the form if GET request
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
