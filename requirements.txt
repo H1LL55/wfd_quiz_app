@@ -11,6 +11,7 @@ Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.2
 fonttools==4.55.8
 greenlet==3.1.1
+gunicorn==23.0.0
 itsdangerous==2.2.0
 Jinja2==3.1.5
 kiwisolver==1.4.8
