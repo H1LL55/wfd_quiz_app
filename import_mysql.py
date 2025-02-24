@@ -24,7 +24,7 @@ def submit():
 
     # Connect to MySQL
     db = mysql.connector.connect(
-        host="wfd-quiz-app.onrender.com/",
+        host="wfd-quiz-app.onrender.com",
         user="root",
         password="Blacksabbath3412!",
         database="testing_python"
@@ -51,7 +51,7 @@ def login():
 
         # Connect to MySQL
         db = mysql.connector.connect(
-            host="wfd-quiz-app.onrender.com/",
+            host="wfd-quiz-app.onrender.com",
             user="root",
             password="Blacksabbath3412!",
             database="testing_python"
@@ -92,7 +92,7 @@ def logout():
 # Function to get random questions from the database
 def get_random_questions(limit=10):
     db = mysql.connector.connect(
-        host="wfd-quiz-app.onrender.com/",
+        host="wfd-quiz-app.onrender.com",
         user="root",
         password="Blacksabbath3412!",
         database="testing_python"
@@ -126,7 +126,7 @@ def submit_quiz():
 
     # Connect to DB to check answers
     db = mysql.connector.connect(
-        host="wfd-quiz-app.onrender.com/",
+        host="wfd-quiz-app.onrender.com",
         user="root",
         password="Blacksabbath3412!",
         database="testing_python"
