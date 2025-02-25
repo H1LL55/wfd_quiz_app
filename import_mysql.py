@@ -1,10 +1,20 @@
 from flask import Flask, request, render_template, redirect, url_for, session
 import mysql.connector
 from flask_bcrypt import Bcrypt
+import os  # Added for environment variable handling
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"  # Needed for session handling
-bcrypt = Bcrypt(app)  # Fixed capitalization issue
+app.secret_key = os.getenv("SECRET_KEY", "your_secret_key")  # Use env var for security
+bcrypt = Bcrypt(app)
+
+# Database configuration (use environment variables for deployment)
+def get_db_connection():
+    return mysql.connector.connect(
+        host=os.getenv("DB_HOST", "localhost"),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", "Blacksabbath3412!"),
+        database=os.getenv("DB_NAME", "testing_python")
+    )
 
 # HTML form route for Registering Page
 @app.route('/')
@@ -23,12 +33,7 @@ def submit():
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     # Connect to MySQL
-    db = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Blacksabbath3412!",
-        database="testing_python"
-    )
+    db = get_db_connection()
     cursor = db.cursor()
 
     # Insert form data into MySQL
@@ -38,8 +43,9 @@ def submit():
         print("User added to database")
     except mysql.connector.IntegrityError:
         print("User already exists")
+    finally:
+        db.close()
 
-    db.close()
     return "Registration successful! <a href='/login'>Login here</a>"
 
 # Login Route
@@ -50,12 +56,7 @@ def login():
         password = request.form.get('password')
 
         # Connect to MySQL
-        db = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="Blacksabbath3412!",
-            database="testing_python"
-        )
+        db = get_db_connection()
         cursor = db.cursor()
 
         # Fetch user password from the database
@@ -65,13 +66,15 @@ def login():
 
         if user:
             stored_hashed_password = user[0]  # Get hashed password
-
             if bcrypt.check_password_hash(stored_hashed_password, password):
                 session["user"] = email  # Store user in session
-                return redirect(url_for("dashboard"))  # Redirect to home
+                db.close()
+                return redirect(url_for("dashboard"))
             else:
+                db.close()
                 return "Invalid email or password."
         else:
+            db.close()
             return "User not found."
 
     return render_template('login.html')
@@ -91,12 +94,7 @@ def logout():
 
 # Function to get random questions from the database
 def get_random_questions(limit=10):
-    db = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Blacksabbath3412!",
-        database="testing_python"
-    )
+    db = get_db_connection()
     cursor = db.cursor(dictionary=True)  # dictionary=True returns results as dictionaries
 
     # Fetch random questions
@@ -125,12 +123,7 @@ def submit_quiz():
     score = 0
 
     # Connect to DB to check answers
-    db = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="Blacksabbath3412!",
-        database="testing_python"
-    )
+    db = get_db_connection()
     cursor = db.cursor(dictionary=True)
 
     for question_id, user_answer in user_answers.items():
@@ -168,17 +161,12 @@ def add_question():
             return "Invalid correct option. Please enter A, B, C, or D."
 
         # Connect to database
-        db = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="Blacksabbath3412!",
-            database="testing_python"
-        )
+        db = get_db_connection()
         cursor = db.cursor()
 
         # Insert into DB
         cursor.execute(
-            "INSERT INTO quiz_questions (question, option_a, option_b, option_c, option_d, correct_option, category, level) VALUES (%s, %s, %s, %s, %s, %s)",
+            "INSERT INTO quiz_questions (question, option_a, option_b, option_c, option_d, correct_option, category, level) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
             (question, option_a, option_b, option_c, option_d, correct_option, category, level)
         )
         db.commit()
@@ -188,7 +176,5 @@ def add_question():
 
     return render_template("add_question.html")  # Show the form if GET request
 
-from waitress import serve
-
-if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=8000)
+# Remove the if __name__ == "__main__" block for Gunicorn compatibility
+# Gunicorn will directly use the 'app' object as the WSGI callable
