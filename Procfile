@@ -1,1 +1,1 @@
-web: gunicorn import_mysql:app
+web: waitress-serve --port=$PORT app:app
