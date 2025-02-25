@@ -10,10 +10,11 @@ bcrypt = Bcrypt(app)
 # Database configuration (use environment variables for deployment)
 def get_db_connection():
     return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", "Blacksabbath3412!"),
-        database=os.getenv("DB_NAME", "testing_python")
+        host=os.getenv("MYSQLHOST", "mysql.railway.internal"),
+        user=os.getenv("MYSQLUSER", "root"),
+        password=os.getenv("MYSQLPASSWORD", "pxfqNEkbzQYLOTFZSsJYkNwztxCMCdoL"),
+        database=os.getenv("MYSQLDATABASE", "railway"),
+        port=os.getenv("MYSQLPORT", "3306")
     )
 
 # HTML form route for Registering Page
