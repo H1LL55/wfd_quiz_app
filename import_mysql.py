@@ -8,18 +8,21 @@ app.secret_key = "your_secret_key"  # Replace with a secure key later
 bcrypt = Bcrypt(app)
 
 # Database connection function
+import os
+import psycopg2
+
 def get_db_connection():
     try:
-        conn = psycopg2.connect(
-            host="localhost",
-            user="postgres",
-            password="Blacksabbath3412!",  # Replace later with os.getenv("DB_PASSWORD")
-            database="testing_python"
-        )
+        DATABASE_URL = os.environ.get("DATABASE_URL")  # Read from environment variable
+        if not DATABASE_URL:
+            raise ValueError("DATABASE_URL is not set. Make sure to add it in Render.")
+
+        conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Ensure secure connection
         return conn
-    except psycopg2.Error as e:
+    except Exception as e:
         print(f"Database connection failed: {e}")
         return None
+    
 
 # Home route (Registration page)
 @app.route('/')
