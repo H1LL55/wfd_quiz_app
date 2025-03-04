@@ -1,9 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head><title>Quiz Results</title></head>
-<body>
-    <h1>Quiz Results</h1>
-    <p>Your score: {{ score }} / {{ total }}</p>
-    <p><a href="/quiz">Try Again</a> | <a href="/home">Back to Home</a></p>
-</body>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.0/dist/confetti.browser.min.js"></script>
+        <title>Quiz Results</title>
+        <link rel="stylesheet" href="styles.css">  <!-- Link to your CSS -->
+    </head>
+    <body>
+        <div class="container">
+            <h1>Quiz Results</h1>
+            <p>Your score: {{ score }} / {{ total }}</p>
+
+            <!-- JavaScript to trigger confetti if score meets passing score -->
+            <script>
+                var score = {{ score }};
+                var total = {{ total }};
+                var passingScore = total * 0.7;  // 70% passing score
+
+                if (score >= passingScore) {
+                    confetti({
+                        particleCount: 200,
+                        spread: 90,
+                        origin: { x: 0.5, y: 0.5 }
+                    });
+                }
+            </script>
+
+            <p><a href="/quiz" class="btn-secondary">Try Again</a> | <a href="/home" class="btn-secondary">Back to Home</a></p>
+        </div>
+    </body>
 </html>

@@ -24,7 +24,7 @@ def get_db_connection():
         return None
     
 
-# Home route (Registration page)
+# Home route (Registration page)t
 @app.route('/')
 def home():
     if "user" in session:
@@ -152,7 +152,7 @@ def add_question():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    allowed_users = ["georgie.warlosz@wood-finishes-direct.com", "jenna.hills@wood-finishes-direct.com"]
+    allowed_users = ["georgie.warlosz@wood-finishes-direct.com", "jenna.hills@wood-finishes-direct.com", "antony.burford@wood-finishes-direct.com"]
     if session["user"] not in allowed_users:
         return "Access Denied: You are not authorized to add questions."
 
