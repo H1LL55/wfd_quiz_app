@@ -1,111 +1,115 @@
 from flask import Flask, request, render_template, redirect, url_for, session
-import mysql.connector
+import psycopg2
+import psycopg2.extras
 from flask_bcrypt import Bcrypt
-import os  # Added for environment variable handling
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "your_secret_key")  # Use env var for security
+app.secret_key = "your_secret_key"  # Replace with a secure key later
 bcrypt = Bcrypt(app)
 
-# Database configuration (use environment variables for deployment)
+# Database connection function
 def get_db_connection():
-    return mysql.connector.connect(
-        host=os.getenv("MYSQLHOST", "mysql.railway.internal"),
-        user=os.getenv("MYSQLUSER", "root"),
-        password=os.getenv("MYSQLPASSWORD", "pxfqNEkbzQYLOTFZSsJYkNwztxCMCdoL"),
-        database=os.getenv("MYSQLDATABASE", "railway"),
-        port=os.getenv("MYSQLPORT", "3306")
-    )
+    try:
+        conn = psycopg2.connect(
+            host="localhost",
+            user="postgres",
+            password="Blacksabbath3412!",  # Replace later with os.getenv("DB_PASSWORD")
+            database="testing_python"
+        )
+        return conn
+    except psycopg2.Error as e:
+        print(f"Database connection failed: {e}")
+        return None
 
-# HTML form route for Registering Page
+# Home route (Registration page)
 @app.route('/')
 def home():
-    if "user" in session:  # Check if user is logged in
+    if "user" in session:
         return redirect(url_for("dashboard"))
     return render_template('test.html')
 
-# Form submission route (Register User)
+# Registration submission route
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form['name']
     email = request.form['email']
     password = request.form['password']
-
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-    # Connect to MySQL
-    db = get_db_connection()
-    cursor = db.cursor()
+    conn = get_db_connection()
+    if conn is None:
+        return "Database connection failed."
 
-    # Insert form data into MySQL
+    cursor = conn.cursor()
     try:
-        cursor.execute("INSERT INTO testing (name, email, password) VALUES (%s, %s, %s)", (name, email, hashed_password))
-        db.commit()
+        cursor.execute(
+            "INSERT INTO testing (name, email, password) VALUES (%s, %s, %s)",
+            (name, email, hashed_password)
+        )
+        conn.commit()
         print("User added to database")
-    except mysql.connector.IntegrityError:
+    except psycopg2.IntegrityError:
         print("User already exists")
+        return "Email already registered. <a href='/login'>Login here</a>"
     finally:
-        db.close()
+        cursor.close()
+        conn.close()
 
     return "Registration successful! <a href='/login'>Login here</a>"
 
-# Login Route
+# Login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
 
-        # Connect to MySQL
-        db = get_db_connection()
-        cursor = db.cursor()
+        conn = get_db_connection()
+        if conn is None:
+            return "Database connection failed."
 
-        # Fetch user password from the database
-        query = 'SELECT password FROM testing WHERE email = %s'
-        cursor.execute(query, (email,))
+        cursor = conn.cursor()
+        cursor.execute('SELECT password FROM testing WHERE email = %s', (email,))
         user = cursor.fetchone()
 
-        if user:
-            stored_hashed_password = user[0]  # Get hashed password
-            if bcrypt.check_password_hash(stored_hashed_password, password):
-                session["user"] = email  # Store user in session
-                db.close()
-                return redirect(url_for("dashboard"))
-            else:
-                db.close()
-                return "Invalid email or password."
+        if user and bcrypt.check_password_hash(user[0], password):
+            session["user"] = email
+            return redirect(url_for("dashboard"))
         else:
-            db.close()
-            return "User not found."
+            return "Invalid email or password."
+
+        cursor.close()
+        conn.close()
 
     return render_template('login.html')
 
-# Home Dashboard Route (Protected)
+# Dashboard route (Protected)
 @app.route('/home')
 def dashboard():
-    if "user" in session:  # Check if user is logged in
-        return render_template("homepage.html", user=session["user"])
-    return redirect(url_for("login"))
+    if "user" not in session:
+        return redirect(url_for("login"))
+    return render_template("homepage.html", user=session["user"])
 
-# Logout Route
+# Logout route
 @app.route('/logout')
 def logout():
-    session.pop("user", None)  # Remove user session
+    session.pop("user", None)
     return redirect(url_for("login"))
 
-# Function to get random questions from the database
+# Fetch random questions from quiz_questions
 def get_random_questions(limit=10):
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)  # dictionary=True returns results as dictionaries
+    conn = get_db_connection()
+    if conn is None:
+        return []
 
-    # Fetch random questions
-    cursor.execute(f"SELECT * FROM quiz_questions ORDER BY RAND() LIMIT {limit}")
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute(f"SELECT * FROM quiz_questions ORDER BY RANDOM() LIMIT {limit}")
     questions = cursor.fetchall()
-
-    db.close()
+    cursor.close()
+    conn.close()
     return questions
 
-# Route to display the quiz
+# Quiz route
 @app.route('/quiz')
 def quiz():
     if "user" not in session:
@@ -114,68 +118,78 @@ def quiz():
     questions = get_random_questions()
     return render_template("quiz.html", questions=questions)
 
-# Route to process quiz answers
+# Submit quiz answers
 @app.route('/submit_quiz', methods=['POST'])
 def submit_quiz():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    user_answers = request.form  # Get submitted answers
+    user_answers = request.form
     score = 0
 
-    # Connect to DB to check answers
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    conn = get_db_connection()
+    if conn is None:
+        return "Database connection failed."
 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     for question_id, user_answer in user_answers.items():
         cursor.execute("SELECT correct_option FROM quiz_questions WHERE id = %s", (question_id,))
-        correct_option = cursor.fetchone()["correct_option"]
+        result = cursor.fetchone()
+        if result and user_answer == result["correct_option"]:
+            score += 1
 
-        if user_answer == correct_option:
-            score += 1  # Increment score for correct answers
+    cursor.close()
+    conn.close()
 
-    db.close()
+    return render_template("quiz_result.html", score=score, total=len(user_answers))
 
-    return f"Quiz complete! Your score: {score}/{len(user_answers)}"
-
+# Add question route (restricted to specific users)
 @app.route('/add_question', methods=['GET', 'POST'])
 def add_question():
-    if "user" not in session:  # Ensure the user is logged in
+    if "user" not in session:
         return redirect(url_for("login"))
 
-    # Restrict access to only Georgie and Jenna
-    if session["user"] not in ["georgie.warlosz@wood-finishes-direct.com", "jenna.hills@wood-finishes-direct.com"]:
+    allowed_users = ["georgie.warlosz@wood-finishes-direct.com", "jenna.hills@wood-finishes-direct.com"]
+    if session["user"] not in allowed_users:
         return "Access Denied: You are not authorized to add questions."
 
-    if request.method == 'POST':  # When form is submitted
+    if request.method == 'POST':
         question = request.form['question']
         option_a = request.form['option_a']
         option_b = request.form['option_b']
         option_c = request.form['option_c']
         option_d = request.form['option_d']
-        correct_option = request.form['correct_option'].upper()  # Ensure it's uppercase (A, B, C, or D)
+        correct_option = request.form['correct_option'].upper()
         category = request.form['category']
         level = request.form['level']
+        product = request.form.get('product', None)  # Optional field
 
-        # Validate correct option
         if correct_option not in ['A', 'B', 'C', 'D']:
             return "Invalid correct option. Please enter A, B, C, or D."
 
-        # Connect to database
-        db = get_db_connection()
-        cursor = db.cursor()
+        conn = get_db_connection()
+        if conn is None:
+            return "Database connection failed."
 
-        # Insert into DB
-        cursor.execute(
-            "INSERT INTO quiz_questions (question, option_a, option_b, option_c, option_d, correct_option, category, level) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-            (question, option_a, option_b, option_c, option_d, correct_option, category, level)
-        )
-        db.commit()
-        db.close()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(
+                "INSERT INTO quiz_questions (question, option_a, option_b, option_c, option_d, correct_option, category, level, product) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                (question, option_a, option_b, option_c, option_d, correct_option, category, level, product)
+            )
+            conn.commit()
+        except psycopg2.Error as e:
+            return f"Error adding question: {e}"
+        finally:
+            cursor.close()
+            conn.close()
 
         return "Question added successfully! <a href='/add_question'>Add another</a> | <a href='/home'>Go Home</a>"
 
-    return render_template("add_question.html")  # Show the form if GET request
+    return render_template("add_question.html")
 
-# Remove the if __name__ == "__main__" block for Gunicorn compatibility
-# Gunicorn will directly use the 'app' object as the WSGI callable
+from waitress import serve
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="127.0.0.1", port=5000)
