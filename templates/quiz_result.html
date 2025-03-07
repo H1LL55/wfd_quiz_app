@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.0/dist/confetti.browser.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@latest/dist/confetti.browser.min.js"></script>>
         <title>Quiz Results</title>
         <link rel="stylesheet" href="styles.css">  <!-- Link to your CSS -->
     </head>
@@ -12,8 +12,8 @@
 
             <!-- JavaScript to trigger confetti if score meets passing score -->
             <script>
-                var score = {{ score }};
-                var total = {{ total }};
+                var score = 8;
+                var total = 10;
                 var passingScore = total * 0.7;  // 70% passing score
 
                 if (score >= passingScore) {
