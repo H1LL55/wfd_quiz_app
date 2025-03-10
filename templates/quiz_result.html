@@ -3,7 +3,7 @@
     <head>
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@latest/dist/confetti.browser.min.js"></script>
         <title>Quiz Results</title>
-        <link rel="stylesheet" href="/static/styles.css">  <!-- Adjust path if needed -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     </head>
     <body>
         <div class="container quiz-result-container">
@@ -13,12 +13,10 @@
                 <p class="message">{{ message }}</p>
             </div>
 
-            <!-- JavaScript with inline variables -->
             <script type="text/javascript">
-                var score = Number("{{ score }}");  // Ensure it’s a number
-                var total = Number("{{ total }}");  // Ensure it’s a number
-                var passingScore = total * 0.7;  // 70% passing score
-
+                var score = Number("{{ score }}");
+                var total = Number("{{ total }}");
+                var passingScore = total * 0.7;
                 if (score >= passingScore) {
                     confetti({
                         particleCount: 200,
