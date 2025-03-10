@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@latest/dist/confetti.browser.min.js"></script>
+        <title>Quiz Results</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    </head>
+    <body>
+        <div class="container quiz-result-container">
+            <h1>Quiz Results</h1>
+            <div class="result-summary">
+                <p class="score">Your score: <span>{{ score }} / {{ total }}</span></p>
+                <p class="message">{{ message }}</p>
+            </div>
+
+            <script type="text/javascript">
+                var score = Number("{{ score }}");
+                var total = Number("{{ total }}");
+                var passingScore = total * 0.7;
+                if (score >= passingScore) {
+                    confetti({
+                        particleCount: 200,
+                        spread: 90,
+                        origin: { x: 0.5, y: 0.5 }
+                    });
+                }
+            </script>
+
+            <div class="button-group">
+                <a href="/quiz" class="btn-secondary">Try Again</a>
+                <a href="/home" class="btn">Back to Home</a>
+            </div>
+        </div>
+    </body>
+</html>
