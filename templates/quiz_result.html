@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@latest/dist/confetti.browser.min.js"></script>>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@latest/dist/confetti.browser.min.js"></script>
         <title>Quiz Results</title>
-        <link rel="stylesheet" href="styles.css">  <!-- Link to your CSS -->
+        <link rel="stylesheet" href="/static/styles.css">  <!-- Adjust path if needed -->
     </head>
     <body>
-        <div class="container">
+        <div class="container quiz-result-container">
             <h1>Quiz Results</h1>
-            <p>Your score: {{ score }} / {{ total }}</p>
+            <div class="result-summary">
+                <p class="score">Your score: <span>{{ score }} / {{ total }}</span></p>
+                <p class="message">{{ message }}</p>
+            </div>
 
-            <!-- JavaScript to trigger confetti if score meets passing score -->
-            <script>
-                var score = 8;
-                var total = 10;
+            <!-- JavaScript with inline variables -->
+            <script type="text/javascript">
+                var score = Number("{{ score }}");  // Ensure it’s a number
+                var total = Number("{{ total }}");  // Ensure it’s a number
                 var passingScore = total * 0.7;  // 70% passing score
 
                 if (score >= passingScore) {
@@ -25,7 +28,10 @@
                 }
             </script>
 
-            <p><a href="/quiz" class="btn-secondary">Try Again</a> | <a href="/home" class="btn-secondary">Back to Home</a></p>
+            <div class="button-group">
+                <a href="/quiz" class="btn-secondary">Try Again</a>
+                <a href="/home" class="btn">Back to Home</a>
+            </div>
         </div>
     </body>
 </html>

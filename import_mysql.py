@@ -144,8 +144,14 @@ def submit_quiz():
     cursor.close()
     conn.close()
 
-    return render_template("quiz_result.html", score=score, total=len(user_answers))
+    total = len(user_answers)
+    if score > 8:  # You can adjust this threshold
+        message = "Well done!"
+    else:
+        message = "Better luck next time!"
 
+    return render_template("quiz_result.html", score=score, total=total, message=message)
+    
 # Add question route (restricted to specific users)
 @app.route('/add_question', methods=['GET', 'POST'])
 def add_question():
