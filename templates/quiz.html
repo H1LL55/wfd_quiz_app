@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@latest/dist/confetti.browser.min.js"></script>
-        <title>Quiz Results</title>
+        <title>Quiz</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     </head>
     <body>
-        <div class="container quiz-result-container">
-            <h1>Quiz Results</h1>
-            <div class="result-summary">
-                <p class="score">Your score: <span>{{ score }} / {{ total }}</span></p>
-                <p class="message">{{ message }}</p>
-            </div>
-
-            <script type="text/javascript">
-                var score = Number("{{ score }}");
-                var total = Number("{{ total }}");
-                var passingScore = total * 0.7;
-                if (score >= passingScore) {
-                    confetti({
-                        particleCount: 200,
-                        spread: 90,
-                        origin: { x: 0.5, y: 0.5 }
-                    });
-                }
-            </script>
-
-            <div class="button-group">
-                <a href="/quiz" class="btn-secondary">Try Again</a>
-                <a href="/home" class="btn">Back to Home</a>
-            </div>
+        <div class="container">
+            <h1>Quiz</h1>
+            {% if questions %}
+                <form action="{{ url_for('submit_quiz') }}" method="post">
+                    {% for question in questions %}
+                        <div class="question">
+                            <p><strong>Question {{ loop.index }}:</strong> {{ question.question }}</p>
+                            <label>
+                                <input type="radio" name="{{ question.id }}" value="A" required> {{ question.option_a }}
+                            </label><br>
+                            <label>
+                                <input type="radio" name="{{ question.id }}" value="B"> {{ question.option_b }}
+                            </label><br>
+                            <label>
+                                <input type="radio" name="{{ question.id }}" value="C"> {{ question.option_c }}
+                            </label><br>
+                            <label>
+                                <input type="radio" name="{{ question.id }}" value="D"> {{ question.option_d }}
+                            </label><br>
+                        </div>
+                    {% endfor %}
+                    <div class="button-group">
+                        <button type="submit" class="btn">Submit Quiz</button>
+                        <a href="/home" class="btn-secondary">Back to Home</a>
+                    </div>
+                </form>
+            {% else %}
+                <p>No questions available. <a href="/add_question">Add some questions</a>.</p>
+                <div class="button-group">
+                    <a href="/home" class="btn-secondary">Back to Home</a>
+                </div>
+            {% endif %}
         </div>
     </body>
 </html>
