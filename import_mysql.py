@@ -4,7 +4,7 @@ import psycopg2.extras
 from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"  # Replace with a secure key later
+app.secret_key = "your_secret_key"  #i need to replace this at some pont
 bcrypt = Bcrypt(app)
 
 # Database connection function
@@ -86,7 +86,7 @@ def login():
 
     return render_template('login.html')
 
-# Dashboard route (Protected)
+# Dashboard route 
 @app.route('/home')
 def dashboard():
     if "user" not in session:
@@ -121,7 +121,7 @@ def quiz():
     questions = get_random_questions()
     return render_template("quiz.html", questions=questions)
 
-# Submit quiz answers
+# Submit all quiz answers
 @app.route('/submit_quiz', methods=['POST'])
 def submit_quiz():
     if "user" not in session:
@@ -145,14 +145,14 @@ def submit_quiz():
     conn.close()
 
     total = len(user_answers)
-    if score > 8:  # You can adjust this threshold
+    if score > 8: #this can be adjusted when the quizzes are made larger, needs to be 70% or above 
         message = "Well done!"
     else:
         message = "Better luck next time!"
 
     return render_template("quiz_result.html", score=score, total=total, message=message)
     
-# Add question route (restricted to specific users)
+# add thes question route (restricted to specific users)
 @app.route('/add_question', methods=['GET', 'POST'])
 def add_question():
     if "user" not in session:
@@ -171,7 +171,7 @@ def add_question():
         correct_option = request.form['correct_option'].upper()
         category = request.form['category']
         level = request.form['level']
-        product = request.form.get('product', None)  # Optional field
+        product = request.form.get('product', None) 
 
         if correct_option not in ['A', 'B', 'C', 'D']:
             return "Invalid correct option. Please enter A, B, C, or D."
@@ -203,5 +203,5 @@ from waitress import serve
 import os
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Render provides a PORT variable
+    port = int(os.environ.get("PORT", 5000))  
     app.run(host="0.0.0.0", port=port, debug=True)
