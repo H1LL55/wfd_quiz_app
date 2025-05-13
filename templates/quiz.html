@@ -32,7 +32,10 @@
                     </div>
                 </form>
             {% else %}
-                <p>No questions available. <a href="/add_question">Add some questions</a>.</p>
+                <p>No questions are currently available in the database.</p>
+                {% if session.user in ['georgie.warlosz@wood-finishes-direct.com', 'jenna.hills@wood-finishes-direct.com', 'antony.burford@wood-finishes-direct.com'] %}
+                    <p><a href="/add_question">Add some questions</a></p>
+                {% endif %}
                 <div class="button-group">
                     <a href="/home" class="btn-secondary">Back to Home</a>
                 </div>
