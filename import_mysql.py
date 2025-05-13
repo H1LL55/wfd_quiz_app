@@ -129,6 +129,16 @@ def submit_quiz():
     message = "Well done!" if score / total >= 0.7 else "Better luck next time!"
     print(f"Quiz result: score={score}, total={total}, message={message}")
     return render_template("quiz_result.html", score=score, total=total, message=message)
+    percentage = (score / total) * 100
+
+    try:
+        cursor.execute(
+            "INSERT INTO quiz_results (user_email, score, total, percentage, message) VALUES (%s, %s, %s, %s, %s)",
+            (session["user"], score, total, percentage, message)
+        )
+        conn.commit()
+    except Exception as e:
+        print(f"Failed to save quiz result: {e}")
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def add_question():
@@ -208,7 +218,30 @@ def submit_quiz():
     return render_template("quiz_result.html", score=score, total=total, message=message)
     
 # add thes question route (restricted to specific users)
+@app.route('/dashboard')
+def user_dashboard():
+    if "user" not in session:
+        return redirect(url_for("login"))
 
+    conn = get_db_connection()
+    if conn is None:
+        return "Database connection failed."
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    try:
+        cursor.execute(
+            "SELECT score, total, percentage, message, timestamp FROM quiz_results WHERE user_email = %s ORDER BY timestamp DESC",
+            (session["user"],)
+        )
+        results = cursor.fetchall()
+    except Exception as e:
+        print(f"Failed to fetch results: {e}")
+        results = []
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template("dashboard.html", results=results, user=session["user"])
 
 from waitress import serve
 

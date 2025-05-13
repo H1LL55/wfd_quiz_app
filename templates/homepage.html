@@ -1,3 +1,4 @@
+<!-- templates/homepage.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,12 +11,14 @@
     <div class="container">
         <h2>Welcome to Your Dashboard</h2>
         <p>You have successfully logged in!</p>
+
         <button class="btn" onclick="location.href='/quiz'">Take a Quiz</button>
+        <button class="btn" onclick="location.href='/results'">View Quiz Results</button>
         <button class="btn-secondary" onclick="location.href='/logout'">Logout</button>
 
-        {% if user in ["georgie.warlosz@wood-finishes-direct.com", "jenna.hills@wood-finishes-direct.com"] %}
-    <button class="btn" onclick="location.href='/add_question'">Add Quiz Question</button>
-{% endif %}
+        {% if user in ["georgie.warlosz@wood-finishes-direct.com", "jenna.hills@wood-finishes-direct.com", "jennahillss@gmail.com", "antony.burford@wood-finishes-direct.com"] %}
+            <button class="btn" onclick="location.href='/add_question'">Add Quiz Question</button>
+        {% endif %}
     </div>
 </body>
 </html>
