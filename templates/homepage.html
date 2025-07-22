@@ -1,0 +1,56 @@
+<!-- templates/homepage.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to Your Dashboard</h2>
+        <p>You have successfully logged in!</p>
+
+        <button class="btn" onclick="location.href='/quiz'">Take a random Quiz</button>
+        <button class="btn" onclick="location.href='/agent_quiz'">Take Agent Quiz</button>
+        <button class="btn" onclick="location.href='/dashboard'">View Quiz Results</button>
+        <button class="btn" onclick="location.href='/employee_quiz_settings'">Quiz Settings</button>
+        
+        
+
+        {% if user in ["georgie.warlosz@wood-finishes-direct.com", "jenna.hills@wood-finishes-direct.com", "jennahillss@gmail.com", "antony.burford@wood-finishes-direct.com"] %}
+            <button class="btn" onclick="location.href='/add_question'">Add Quiz Question</button>
+            <button class="btn" onclick="location.href='/admin_dash'">Admin Dashboard</button>
+            <button class="btn-secondary" onclick="location.href='/logout'">Logout</button>
+        
+        {% endif %}
+    </div>
+ <style>
+        body {
+            margin: 0;
+            padding-bottom: 100px; 
+        }
+        .bottom-image {
+            position: relative;
+            bottom: 10px;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            text-align: center;
+            background: #f5f7fa;
+        }
+        .bottom-image img {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+            width: 150px;
+            height: auto;
+        }
+    </style>
+    <div class="bottom-image">
+        <img src="{{ url_for('static', filename='img/wfd.png') }}" alt="logo">
+    </div>
+
+</body>
+</html>

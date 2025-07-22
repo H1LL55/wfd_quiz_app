@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Question {{ index }} of {{ total }}</h1>
+        <form method="POST">
+            <div class="question">
+                <p><strong>{{ question.question }}</strong></p>
+
+                <div class="answer-box">
+                    <label>
+                        <input type="radio" name="answer" value="A" required>
+                        {{ question.option_a }}
+                    </label>
+                </div>
+                <div class="answer-box">
+                    <label>
+                        <input type="radio" name="answer" value="B">
+                        {{ question.option_b }}
+                    </label>
+                </div>
+                <div class="answer-box">
+                    <label>
+                        <input type="radio" name="answer" value="C">
+                        {{ question.option_c }}
+                    </label>
+                </div>
+                <div class="answer-box">
+                    <label>
+                        <input type="radio" name="answer" value="D">
+                        {{ question.option_d }}
+                    </label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn">
+                    {% if index == total %}Submit Quiz{% else %}Next{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Quiz Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f9f9f9;
+        }
+        .form-section {
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            max-width: 500px;
+        }
+        select, input[type="number"], button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Set Quiz Filters for an Employee</h2>
+
+    <form class="form-section" method="POST" action="/save_quiz_settings">
+        <label>Select Employee:</label>
+        <select name="email" required>
+            {% for user_email in employee_emails %}
+                <option value="{{ user_email }}">{{ user_email }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Level:</label>
+        <select name="level">
+            {% for level in levels %}
+                <option value="{{ level }}">{{ level }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Category:</label>
+        <select name="category">
+            <option value="">-- Optional --</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}">{{ cat }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Product:</label>
+        <select name="product">
+            <option value="">-- Optional --</option>
+            {% for prod in products %}
+                <option value="{{ prod }}">{{ prod }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Number of Questions:</label>
+        <input type="number" name="question_count" min="1" max="50" value="10" required>
+
+        <button type="submit">Save Settings</button>
+    </form>
+
+</body>
+</html>

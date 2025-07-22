@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ user.name }}'s Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>{{ user.name }}'s Dashboard</h2>
+        <p>Email: {{ user.email }}</p>
+
+        {% if results %}
+            <h3>Quiz Results</h3>
+            <table border="1" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <tr>
+                    <th>Score</th>
+                    <th>Total</th>
+                    <th>Percentage</th>
+                    <th>Message</th>
+                    <th>Timestamp</th>
+                </tr>
+                {% for r in results %}
+                    <tr>
+                        <td>{{ r.score }}</td>
+                        <td>{{ r.total }}</td>
+                        <td>{{ r.percentage }}%</td>
+                        <td>{{ r.message }}</td>
+                        <td>{{ r.timestamp }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No quiz results found.</p>
+        {% endif %}
+
+        <button class="btn" onclick="location.href='/admin_dash'">Back to Admin</button>
+    </div>
+</body>
+</html>

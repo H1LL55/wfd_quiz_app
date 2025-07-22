@@ -1,0 +1,280 @@
+/* Reset browser defaults */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Container styling */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styles */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Label styling */
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+/* Input styling - broadened to include email and password */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    width: 100%; /* Ensures inputs fill the container */
+}
+
+/* Focus effect for all input types */
+.form-group input:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+/* Question styling - making the questions larger */
+.form-group p {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.question p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 25px;  
+}
+
+/* Styling answer options */
+.answer-container {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 12px;
+    border: 1px solid #bbb; /* Thin but clear border */
+    border-radius: 6px;
+    margin-bottom: 12px;
+    transition: background-color 0.3s, border-color 0.3s;
+    cursor: pointer;
+    font-size: 1rem; /* Slightly smaller than question text */
+    box-shadow: 0 0 2px rgba(0,0,0,0.05);
+}
+
+.answer-box {
+    border: 1px solid #ccc;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.answer-box:hover {
+    border-color: #4CAF50;
+    background-color: #f1f1f1;
+}
+
+.answer-box input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.answer-container:hover {
+    background-color: #f3fdf3;
+    border-color: #4CAF50;
+}
+
+.answer-container input[type="radio"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+}
+
+ul li a {
+    text-decoration: none;
+}
+
+/* Button styling */
+.btn,
+.btn-secondary {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    margin-top: 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.btn-secondary {
+    background-color: #ddd;
+    color: #333;
+    text-decoration: none;
+    
+}
+
+.btn-secondary:hover {
+    background-color: #ccc;
+}
+
+/* Styling for text inputs (Product, Category, Level) */
+.form-group input[type="text"],
+input[name="category"],
+input[name="level"],
+input[name="product"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Input focus effect */
+.form-group input:focus,
+input[name="category"]:focus,
+input[name="level"]:focus,
+input[name="product"]:focus {
+    border-color: #4CAF50;
+    background-color: #f9f9f9;
+    outline: none;
+}
+
+/* Labels for better spacing */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Styling for better spacing and alignment */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Quiz Results Page Specific Styles */
+.quiz-result-container {
+    max-width: 800px; /* Wider container for results */
+    padding: 40px;
+}
+
+.quiz-result-container h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.result-summary {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.score {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.score span {
+    color: #333;
+}
+
+.message {
+    font-size: 1.5rem;
+    margin-top: 15px;
+    font-weight: 500;
+    color: #444;
+}
+
+.button-group {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-decoration: none;
+}
+
+.button-group .btn,
+.button-group .btn-secondary {
+    width: 200px;
+    padding: 15px;
+    font-size: 1.2rem;
+    margin-top: 0;
+    text-decoration: none;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+a.btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    transition: background-color 0.3s;
+}
+
+a.btn:hover {
+    background-color: #45a049;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none; 
+    padding-left: 0px;
+}
